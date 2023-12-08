@@ -64,6 +64,8 @@ void AStealthDemoCharacter::BeginPlay()
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
+		PlayerController->bShowMouseCursor = true;
+
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -150,9 +152,12 @@ void AStealthDemoCharacter::LookAtMouse()
 			double LookToMouseRotation = 0;
 
 			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location).Yaw;
+			headRotation = LookToMouseRotation - GetActorRotation().Yaw;
 
-
-			SetActorRotation(FRotator(GetActorRotation().Pitch, LookToMouseRotation, GetActorRotation().Roll));
+			if (headRotation >= 110 || headRotation <= -80)
+			{
+				SetActorRotation(FRotator(GetActorRotation().Pitch, LookToMouseRotation, GetActorRotation().Roll));
+			}
 		}
 	}
 }
@@ -176,7 +181,6 @@ void AStealthDemoCharacter::Run()
 {
 	currentMovementState = EMovementState::Running;
 	isCrouched = false;
-	UE_LOG(LogTemplateCharacter, Error, TEXT("NOT CROUCHING"));
 
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 }
@@ -185,7 +189,7 @@ void AStealthDemoCharacter::Crouch()
 {
 	currentMovementState = EMovementState::Crouching;
 	isCrouched = true;
-	UE_LOG(LogTemplateCharacter, Error, TEXT("CROUCHING"));
+
 	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
 }
 
