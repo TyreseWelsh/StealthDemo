@@ -32,17 +32,17 @@ class AStealthDemoCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
+	/** Vault Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	UInputAction* VaultAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	/** Look Input Action */
+	/** Crouch Toggle Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	UInputAction* ToggleCrouchAction;
 
 public:
 	AStealthDemoCharacter();
@@ -55,7 +55,14 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	void LookAtMouse();
+	
+	void ToggleCrouch();
+	void Run();
+	void Crouch();
+
+	void VaultObject();
 
 protected:
 	// APawn interface
@@ -64,10 +71,28 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaTime);
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	enum EMovementState
+	{
+		Running,
+		Crouching
+	};
+	EMovementState currentMovementState = EMovementState::Running;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float RunSpeed = 375.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float CrouchSpeed = 175.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	bool isCrouched = false;
 };
 

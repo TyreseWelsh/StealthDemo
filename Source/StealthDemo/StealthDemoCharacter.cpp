@@ -10,6 +10,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -65,8 +67,16 @@ void AStealthDemoCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		}
 	}
+}
+
+void AStealthDemoCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	LookAtMouse();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -75,17 +85,16 @@ void AStealthDemoCharacter::BeginPlay()
 void AStealthDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) 
+	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(VaultAction, ETriggerEvent::Started, this, &AStealthDemoCharacter::VaultObject);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AStealthDemoCharacter::Move);
 
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AStealthDemoCharacter::Look);
+		// Crouching
+		EnhancedInputComponent->BindAction(ToggleCrouchAction, ETriggerEvent::Triggered, this, &AStealthDemoCharacter::ToggleCrouch);
 	}
 	else
 	{
@@ -127,4 +136,60 @@ void AStealthDemoCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AStealthDemoCharacter::LookAtMouse()
+{
+	if (Controller != nullptr)
+	{
+		if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+		{
+			FHitResult result;
+			PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), true, result);
+
+			double LookToMouseRotation = 0;
+
+			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location).Yaw;
+
+
+			SetActorRotation(FRotator(GetActorRotation().Pitch, LookToMouseRotation, GetActorRotation().Roll));
+		}
+	}
+}
+
+void AStealthDemoCharacter::ToggleCrouch()
+{
+	switch (currentMovementState)
+	{
+		case AStealthDemoCharacter::Running:
+			Crouch();
+			break;
+		case AStealthDemoCharacter::Crouching:
+			Run();
+			break;
+		default:
+			break;
+	}
+}
+
+void AStealthDemoCharacter::Run()
+{
+	currentMovementState = EMovementState::Running;
+	isCrouched = false;
+	UE_LOG(LogTemplateCharacter, Error, TEXT("NOT CROUCHING"));
+
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+}
+
+void AStealthDemoCharacter::Crouch()
+{
+	currentMovementState = EMovementState::Crouching;
+	isCrouched = true;
+	UE_LOG(LogTemplateCharacter, Error, TEXT("CROUCHING"));
+	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+}
+
+// NOTE: WONT IMPLEMENT YET BUT IS AN IDEA TO REPLACE JUMPING
+void AStealthDemoCharacter::VaultObject()
+{
 }
