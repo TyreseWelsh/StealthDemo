@@ -81,6 +81,24 @@ void AStealthDemoCharacter::Tick(float DeltaTime)
 	LookAtMouse();
 }
 
+void AStealthDemoCharacter::YawToTarget(FVector targetLocation)
+{
+	FVector dir = targetLocation - GetActorLocation();
+
+	float ForwardDotProduct = GetActorForwardVector() | dir;
+	float RightDotProduct = GetActorRightVector() | dir;
+
+	if (RightDotProduct > 0.f)
+	{
+		headRotation = FMath::Acos(ForwardDotProduct) * (180.f) / PI * (-1.f);
+	}
+		
+	else
+	{
+		headRotation = FMath::Acos(ForwardDotProduct) * (180.f) / PI;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -149,15 +167,45 @@ void AStealthDemoCharacter::LookAtMouse()
 			FHitResult result;
 			PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), true, result);
 
-			double LookToMouseRotation = 0;
+			FRotator LookToMouseRotation = FRotator(0,0,0);
 
-			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location).Yaw;
-			headRotation = LookToMouseRotation - GetActorRotation().Yaw;
+			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location);
 
-			if (headRotation >= 110 || headRotation <= -80)
+
+			headRotation = LookToMouseRotation.Yaw - GetActorRotation().Yaw;												// Both these values go from 0-179 then -179 back to 0 which is annoying
+
+			if (headRotation > 180)
 			{
-				SetActorRotation(FRotator(GetActorRotation().Pitch, LookToMouseRotation, GetActorRotation().Roll));
+				headRotation -= 360;
 			}
+			else if (headRotation < -180)
+			{
+				headRotation += 360;
+			}
+
+			if (headRotation >= 15 || headRotation <= -15)
+			{
+				bTurning = true;
+
+				TurnPlayerToMouse(LookToMouseRotation);
+			}
+
+			// Body Rotation
+			//if (headRotation >= 40)
+			//{
+			//	bTurnRight = true;
+			//	bTurnLeft = false;
+			//	UE_LOG(LogTemplateCharacter, Error, TEXT("TURINGIN RIGHT"));
+			//	TurnPlayerToMouse(LookToMouseRotation);
+			//}
+			//else if (headRotation <= -40)
+			//{
+			//	bTurnLeft = true;
+			//	bTurnRight = false;
+			//	UE_LOG(LogTemplateCharacter, Error, TEXT("TURINGIN LEFT"));
+
+			//	TurnPlayerToMouse(LookToMouseRotation);
+			//}
 		}
 	}
 }
