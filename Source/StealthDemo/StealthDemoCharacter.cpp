@@ -81,23 +81,6 @@ void AStealthDemoCharacter::Tick(float DeltaTime)
 	LookAtMouse();
 }
 
-void AStealthDemoCharacter::YawToTarget(FVector targetLocation)
-{
-	FVector dir = targetLocation - GetActorLocation();
-
-	float ForwardDotProduct = GetActorForwardVector() | dir;
-	float RightDotProduct = GetActorRightVector() | dir;
-
-	if (RightDotProduct > 0.f)
-	{
-		headRotation = FMath::Acos(ForwardDotProduct) * (180.f) / PI * (-1.f);
-	}
-		
-	else
-	{
-		headRotation = FMath::Acos(ForwardDotProduct) * (180.f) / PI;
-	}
-}
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -167,13 +150,11 @@ void AStealthDemoCharacter::LookAtMouse()
 			FHitResult result;
 			PlayerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Camera), true, result);
 
-			FRotator LookToMouseRotation = FRotator(0,0,0);
 
 			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location);
 
 
 			headRotation = LookToMouseRotation.Yaw - GetActorRotation().Yaw;												// Both these values go from 0-179 then -179 back to 0 which is annoying
-
 			if (headRotation > 180)
 			{
 				headRotation -= 360;
@@ -182,30 +163,48 @@ void AStealthDemoCharacter::LookAtMouse()
 			{
 				headRotation += 360;
 			}
+			UE_LOG(LogTemplateCharacter, Error, TEXT("HEAD ROTATION IS %f"), headRotation)
 
-			if (headRotation >= 15 || headRotation <= -15)
+			switch (currentMovementState)
 			{
-				bTurning = true;
+			case(EMovementState::Running):
+				if (headRotation >= StandingMaxHeadRotation)
+				{
+					bTurning = true;
+					bTurnLeft = false;
 
-				TurnPlayerToMouse(LookToMouseRotation);
+					TurnPlayerToMouse(LookToMouseRotation);
+				}
+				else if (headRotation <= StandingMinHeadRotation)
+				{
+					bTurning = true;
+					bTurnLeft = true;
+
+					TurnPlayerToMouse(LookToMouseRotation);
+				}
+				else
+				{
+					bTurning = false;
+					bTurnLeft = false;
+				}
+				break;
+			case(EMovementState::Crouching):
+				if (headRotation > CrouchingMaxHeadRotation)
+				{
+					bTurning = true;
+					bTurnLeft = false;
+
+					TurnPlayerToMouse(LookToMouseRotation);
+				}
+				else if (headRotation < CrouchingMinHeadRotation)
+				{
+					bTurning = true;
+					bTurnLeft = true;
+
+					TurnPlayerToMouse(LookToMouseRotation);
+				}
+				break;
 			}
-
-			// Body Rotation
-			//if (headRotation >= 40)
-			//{
-			//	bTurnRight = true;
-			//	bTurnLeft = false;
-			//	UE_LOG(LogTemplateCharacter, Error, TEXT("TURINGIN RIGHT"));
-			//	TurnPlayerToMouse(LookToMouseRotation);
-			//}
-			//else if (headRotation <= -40)
-			//{
-			//	bTurnLeft = true;
-			//	bTurnRight = false;
-			//	UE_LOG(LogTemplateCharacter, Error, TEXT("TURINGIN LEFT"));
-
-			//	TurnPlayerToMouse(LookToMouseRotation);
-			//}
 		}
 	}
 }

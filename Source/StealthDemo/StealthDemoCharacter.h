@@ -111,6 +111,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bTurning = false;
 
-	void YawToTarget(FVector targetLocation);
-};
+	FRotator LookToMouseRotation = FRotator(0, 0, 0);
 
+	int StandingMaxHeadRotation = 15;
+	int StandingMinHeadRotation = -15;
+
+	int CrouchingMaxHeadRotation = 50;
+	int CrouchingMinHeadRotation = -50;
+};
