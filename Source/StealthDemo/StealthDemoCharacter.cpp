@@ -71,6 +71,8 @@ void AStealthDemoCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		}
+
+		Run();
 	}
 }
 
@@ -163,7 +165,6 @@ void AStealthDemoCharacter::LookAtMouse()
 			{
 				headRotation += 360;
 			}
-			UE_LOG(LogTemplateCharacter, Error, TEXT("HEAD ROTATION IS %f"), headRotation)
 
 			switch (currentMovementState)
 			{
@@ -213,10 +214,10 @@ void AStealthDemoCharacter::ToggleCrouch()
 {
 	switch (currentMovementState)
 	{
-		case AStealthDemoCharacter::Running:
+		case (EMovementState::Running):
 			Crouch();
 			break;
-		case AStealthDemoCharacter::Crouching:
+		case (EMovementState::Crouching):
 			Run();
 			break;
 		default:
@@ -228,16 +229,22 @@ void AStealthDemoCharacter::Run()
 {
 	currentMovementState = EMovementState::Running;
 	isCrouched = false;
+	RotationSpeed = StandingRotationSpeed;
 
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+
+	ChangeVisionConeSize();
 }
 
 void AStealthDemoCharacter::Crouch()
 {
 	currentMovementState = EMovementState::Crouching;
 	isCrouched = true;
+	RotationSpeed = CrouchingRotationSpeed;
 
 	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
+
+	ChangeVisionConeSize();
 }
 
 // NOTE: WONT IMPLEMENT YET BUT IS AN IDEA TO REPLACE JUMPING

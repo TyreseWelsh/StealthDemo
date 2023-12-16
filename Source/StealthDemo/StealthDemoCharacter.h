@@ -15,6 +15,15 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
+
+UENUM(BlueprintType)
+enum class EMovementState : uint8
+{
+	Running UMETA(DisplayName = "Running"),
+	Crouching UMETA(DisplayName = "Crouching")
+};
+
+
 UCLASS(config=Game)
 class AStealthDemoCharacter : public ACharacter
 {
@@ -79,11 +88,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	enum EMovementState
-	{
-		Running,
-		Crouching
-	};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	EMovementState currentMovementState = EMovementState::Running;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
@@ -101,6 +106,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void TurnPlayerToMouse(FRotator RotationToMouse);
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void ChangeVisionConeSize();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bTurnRight = false;
@@ -111,11 +119,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool bTurning = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float RotationSpeed = 0;
+	const float StandingRotationSpeed = 3.f;
+	const float CrouchingRotationSpeed = 4.f;
+
 	FRotator LookToMouseRotation = FRotator(0, 0, 0);
 
-	int StandingMaxHeadRotation = 15;
-	int StandingMinHeadRotation = -15;
+	int StandingMaxHeadRotation = 25;
+	int StandingMinHeadRotation = -25;
 
-	int CrouchingMaxHeadRotation = 50;
-	int CrouchingMinHeadRotation = -50;
+	int CrouchingMaxHeadRotation = 65;
+	int CrouchingMinHeadRotation = -65;
 };
