@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "StealthDemoCharacter.h"
+#include "StealthDemo/StealthDemoCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -72,7 +72,7 @@ void AStealthDemoCharacter::BeginPlay()
 			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 		}
 
-		Run();
+		PlayerRun();
 	}
 }
 
@@ -215,17 +215,17 @@ void AStealthDemoCharacter::ToggleCrouch()
 	switch (currentMovementState)
 	{
 		case (EMovementState::Running):
-			Crouch();
+			PlayerCrouch();
 			break;
 		case (EMovementState::Crouching):
-			Run();
+			PlayerRun();
 			break;
 		default:
 			break;
 	}
 }
 
-void AStealthDemoCharacter::Run()
+void AStealthDemoCharacter::PlayerRun()
 {
 	currentMovementState = EMovementState::Running;
 	isCrouched = false;
@@ -236,7 +236,7 @@ void AStealthDemoCharacter::Run()
 	ChangeVisionConeSize();
 }
 
-void AStealthDemoCharacter::Crouch()
+void AStealthDemoCharacter::PlayerCrouch()
 {
 	currentMovementState = EMovementState::Crouching;
 	isCrouched = true;

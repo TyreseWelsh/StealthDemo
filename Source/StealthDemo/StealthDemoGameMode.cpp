@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "StealthDemoGameMode.h"
-#include "StealthDemoCharacter.h"
+#include "StealthDemo/StealthDemoGameMode.h"
+#include "StealthDemo/StealthDemoCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AStealthDemoGameMode::AStealthDemoGameMode()

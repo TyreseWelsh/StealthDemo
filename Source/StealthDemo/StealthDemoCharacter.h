@@ -68,8 +68,8 @@ protected:
 	void LookAtMouse();
 	
 	void ToggleCrouch();
-	void Run();
-	void Crouch();
+	void PlayerRun();
+	void PlayerCrouch();
 
 	void VaultObject();
 
@@ -92,10 +92,10 @@ public:
 	EMovementState currentMovementState = EMovementState::Running;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	float RunSpeed = 375.f;
+	float RunSpeed = 350.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	float CrouchSpeed = 175.f;
+	float CrouchSpeed = 200.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool isCrouched = false;
@@ -129,6 +129,6 @@ private:
 	int StandingMaxHeadRotation = 25;
 	int StandingMinHeadRotation = -25;
 
-	int CrouchingMaxHeadRotation = 65;
-	int CrouchingMinHeadRotation = -65;
+	int CrouchingMaxHeadRotation = 55;
+	int CrouchingMinHeadRotation = -55;
 };

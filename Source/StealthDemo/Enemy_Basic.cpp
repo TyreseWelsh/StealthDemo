@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemy_Basic.h"
+#include "StealthDemo/Enemy_Basic.h"
 
 // Sets default values
 AEnemy_Basic::AEnemy_Basic()
