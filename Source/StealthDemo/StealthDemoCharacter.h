@@ -100,6 +100,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool isCrouched = false;
 
+	float StandingDegreesPerTrace = 1.f;
+	float CrouchingDegreesPerTrace = 1.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VisionCone, meta = (AllowPrivateAccess = "true"))
+	float CurrentDegreesPerTrace = 1.f;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float headRotation = 0;
 
@@ -129,6 +136,6 @@ private:
 	int StandingMaxHeadRotation = 25;
 	int StandingMinHeadRotation = -25;
 
-	int CrouchingMaxHeadRotation = 50;
-	int CrouchingMinHeadRotation = -50;
+	int CrouchingMaxHeadRotation = 65;
+	int CrouchingMinHeadRotation = -65;
 };

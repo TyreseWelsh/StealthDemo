@@ -230,6 +230,7 @@ void AStealthDemoCharacter::PlayerRun()
 	currentMovementState = EMovementState::Running;
 	isCrouched = false;
 	RotationSpeed = StandingRotationSpeed;
+	CurrentDegreesPerTrace = StandingDegreesPerTrace;
 
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 
@@ -241,6 +242,8 @@ void AStealthDemoCharacter::PlayerCrouch()
 	currentMovementState = EMovementState::Crouching;
 	isCrouched = true;
 	RotationSpeed = CrouchingRotationSpeed;
+	CurrentDegreesPerTrace = CrouchingDegreesPerTrace;
+
 
 	GetCharacterMovement()->MaxWalkSpeed = CrouchSpeed;
 
