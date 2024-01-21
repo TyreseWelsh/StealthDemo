@@ -129,6 +129,6 @@ private:
 	int StandingMaxHeadRotation = 25;
 	int StandingMinHeadRotation = -25;
 
-	int CrouchingMaxHeadRotation = 55;
-	int CrouchingMinHeadRotation = -55;
+	int CrouchingMaxHeadRotation = 50;
+	int CrouchingMinHeadRotation = -50;
 };
