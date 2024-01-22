@@ -103,12 +103,18 @@ public:
 	float StandingDegreesPerTrace = 1.f;
 	float CrouchingDegreesPerTrace = 1.5f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	float headRotation = 0;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = VisionCone, meta = (AllowPrivateAccess = "true"))
 	float CurrentDegreesPerTrace = 1.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	bool Caught = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	float headRotation = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	bool InputEnabled = true;
+
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void TurnPlayerToMouse(FRotator RotationToMouse);

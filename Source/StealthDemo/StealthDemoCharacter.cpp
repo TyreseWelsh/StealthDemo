@@ -155,15 +155,17 @@ void AStealthDemoCharacter::LookAtMouse()
 
 			LookToMouseRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), result.Location);
 
-
-			headRotation = LookToMouseRotation.Yaw - GetActorRotation().Yaw;												// Both these values go from 0-179 then -179 back to 0 which is annoying
-			if (headRotation > 180)
+			if (InputEnabled)
 			{
-				headRotation -= 360;
-			}
-			else if (headRotation < -180)
-			{
-				headRotation += 360;
+				headRotation = LookToMouseRotation.Yaw - GetActorRotation().Yaw;												// Both these values go from 0-179 then -179 back to 0 which is annoying
+				if (headRotation > 180)
+				{
+					headRotation -= 360;
+				}
+				else if (headRotation < -180)
+				{
+					headRotation += 360;
+				}
 			}
 
 			switch (currentMovementState)
