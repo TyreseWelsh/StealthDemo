@@ -68,7 +68,11 @@ protected:
 	void LookAtMouse();
 	
 	void ToggleCrouch();
+
+	UFUNCTION(BlueprintCallable)
 	void PlayerRun();
+
+	UFUNCTION(BlueprintCallable)
 	void PlayerCrouch();
 
 	void VaultObject();
@@ -97,7 +101,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float CrouchSpeed = 200.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	bool isCrouched = false;
 
 	float StandingDegreesPerTrace = 1.f;
